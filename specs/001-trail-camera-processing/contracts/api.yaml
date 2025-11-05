@@ -1,0 +1,1035 @@
+openapi: 3.0.3
+info:
+  title: Trail Camera Image Processing API
+  description: API for managing trail camera images, processing jobs, wildlife detections, and maps
+  version: 1.0.0
+  contact:
+    name: Bambi Basher Development Team
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+  - url: https://api.trailcam.example.com/api
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: Images
+    description: Image upload, retrieval, and filtering
+  - name: Processing
+    description: Batch processing job management
+  - name: Detections
+    description: Wildlife detection results
+  - name: Statistics
+    description: Analytics and insights
+  - name: Maps
+    description: Map and camera location management
+
+paths:
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: User login
+      description: Authenticate user and create session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 50
+                password:
+                  type: string
+                  minLength: 8
+      responses:
+        '200':
+          description: Login successful
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: session_id=abc123; HttpOnly; Secure; SameSite=Strict
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/logout:
+    post:
+      tags: [Authentication]
+      summary: User logout
+      description: Invalidate current session
+      security:
+        - cookieAuth: []
+      responses:
+        '204':
+          description: Logout successful
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/me:
+    get:
+      tags: [Authentication]
+      summary: Get current user
+      description: Retrieve authenticated user information
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Current user data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /images:
+    get:
+      tags: [Images]
+      summary: List images
+      description: Retrieve paginated list of images with optional filters
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: species
+          in: query
+          description: Filter by species common name
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          description: Filter by minimum capture date (Unix timestamp)
+          schema:
+            type: integer
+        - name: endDate
+          in: query
+          description: Filter by maximum capture date (Unix timestamp)
+          schema:
+            type: integer
+        - name: cameraLocationId
+          in: query
+          description: Filter by camera location ID
+          schema:
+            type: integer
+        - name: processingStatus
+          in: query
+          description: Filter by processing status
+          schema:
+            type: string
+            enum: [pending, processing, completed, failed]
+      responses:
+        '200':
+          description: Paginated image list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  images:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Image'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags: [Images]
+      summary: Upload images
+      description: Upload one or more images (admin only)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [images]
+              properties:
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  maxItems: 500
+                cameraLocationId:
+                  type: integer
+                  description: Optional camera location ID to associate with uploaded images
+      responses:
+        '201':
+          description: Images uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uploadedCount:
+                    type: integer
+                  duplicateCount:
+                    type: integer
+                  images:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Image'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /images/{imageId}:
+    get:
+      tags: [Images]
+      summary: Get image details
+      description: Retrieve detailed information for a specific image
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: imageId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Image details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /images/{imageId}/file:
+    get:
+      tags: [Images]
+      summary: Download image file
+      description: Retrieve the actual image file
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: imageId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: thumbnail
+          in: query
+          description: Return thumbnail instead of full image
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Image file
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /processing/jobs:
+    get:
+      tags: [Processing]
+      summary: List processing jobs
+      description: Retrieve list of batch processing jobs (admin only)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, running, completed, failed]
+      responses:
+        '200':
+          description: List of processing jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProcessingJob'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    post:
+      tags: [Processing]
+      summary: Start batch processing
+      description: Initiate processing for pending images (admin only)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                imageIds:
+                  type: array
+                  items:
+                    type: integer
+                  description: Specific image IDs to process (if empty, process all pending)
+      responses:
+        '201':
+          description: Processing job created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingJob'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /processing/jobs/{jobId}:
+    get:
+      tags: [Processing]
+      summary: Get job status
+      description: Retrieve processing job status and progress (admin only)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Processing job details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessingJob'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /detections:
+    get:
+      tags: [Detections]
+      summary: List detections
+      description: Retrieve wildlife detections with optional filters
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: imageId
+          in: query
+          description: Filter by image ID
+          schema:
+            type: integer
+        - name: speciesId
+          in: query
+          description: Filter by species ID
+          schema:
+            type: integer
+        - name: minConfidence
+          in: query
+          description: Minimum confidence threshold
+          schema:
+            type: number
+            format: float
+            minimum: 0
+            maximum: 1
+            default: 0.5
+      responses:
+        '200':
+          description: List of detections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Detection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /species:
+    get:
+      tags: [Detections]
+      summary: List species
+      description: Retrieve all known species
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of species
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Species'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /statistics/summary:
+    get:
+      tags: [Statistics]
+      summary: Get statistics summary
+      description: Retrieve overall statistics and insights
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          description: Start of date range (Unix timestamp)
+          schema:
+            type: integer
+        - name: endDate
+          in: query
+          description: End of date range (Unix timestamp)
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Statistics summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatisticsSummary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /statistics/species-frequency:
+    get:
+      tags: [Statistics]
+      summary: Get species frequency data
+      description: Retrieve detection counts by species
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          schema:
+            type: integer
+        - name: endDate
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Species frequency data
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: integer
+                example:
+                  "White-tailed Deer": 150
+                  "Black Bear": 12
+                  "Coyote": 45
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /statistics/temporal-patterns:
+    get:
+      tags: [Statistics]
+      summary: Get temporal activity patterns
+      description: Retrieve detection activity by time of day
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          schema:
+            type: integer
+        - name: endDate
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Temporal activity data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hourly:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        hour:
+                          type: integer
+                        count:
+                          type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /maps:
+    get:
+      tags: [Maps]
+      summary: List maps
+      description: Retrieve all shared maps (or all maps for admins)
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of maps
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Map'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags: [Maps]
+      summary: Create map
+      description: Create a new map with camera locations (admin only)
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  minLength: 3
+                  maxLength: 100
+                description:
+                  type: string
+                  maxLength: 500
+                isShared:
+                  type: boolean
+                  default: false
+      responses:
+        '201':
+          description: Map created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Map'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /maps/{mapId}:
+    get:
+      tags: [Maps]
+      summary: Get map details
+      description: Retrieve map with camera locations
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: mapId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Map details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    put:
+      tags: [Maps]
+      summary: Update map
+      description: Update map properties (admin only)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: mapId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                isShared:
+                  type: boolean
+      responses:
+        '200':
+          description: Map updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Map'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    delete:
+      tags: [Maps]
+      summary: Delete map
+      description: Delete a map and all its camera locations (admin only)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: mapId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Map deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /maps/{mapId}/locations:
+    post:
+      tags: [Maps]
+      summary: Add camera location
+      description: Add a camera location to a map (admin only)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: mapId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [label, latitude, longitude]
+              properties:
+                label:
+                  type: string
+                  minLength: 1
+                  maxLength: 100
+                latitude:
+                  type: number
+                  format: double
+                  minimum: -90
+                  maximum: 90
+                longitude:
+                  type: number
+                  format: double
+                  minimum: -180
+                  maximum: 180
+      responses:
+        '201':
+          description: Camera location added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CameraLocation'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /maps/{mapId}/locations/{locationId}:
+    put:
+      tags: [Maps]
+      summary: Update camera location
+      description: Update camera location properties (admin only)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: mapId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: locationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+                latitude:
+                  type: number
+                  format: double
+                longitude:
+                  type: number
+                  format: double
+      responses:
+        '200':
+          description: Camera location updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CameraLocation'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    delete:
+      tags: [Maps]
+      summary: Delete camera location
+      description: Remove a camera location from a map (admin only)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: mapId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: locationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Camera location deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session_id
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        role:
+          type: string
+          enum: [admin, user]
+        createdAt:
+          type: integer
+          description: Unix timestamp
+        lastLogin:
+          type: integer
+          description: Unix timestamp
+
+    Image:
+      type: object
+      properties:
+        id:
+          type: integer
+        filename:
+          type: string
+        fileSize:
+          type: integer
+        mimeType:
+          type: string
+        uploadedAt:
+          type: integer
+        capturedAt:
+          type: integer
+          nullable: true
+        processingStatus:
+          type: string
+          enum: [pending, processing, completed, failed]
+        thumbnailPath:
+          type: string
+          nullable: true
+
+    ImageDetail:
+      allOf:
+        - $ref: '#/components/schemas/Image'
+        - type: object
+          properties:
+            uploadedBy:
+              $ref: '#/components/schemas/User'
+            cameraLocation:
+              $ref: '#/components/schemas/CameraLocation'
+              nullable: true
+            detections:
+              type: array
+              items:
+                $ref: '#/components/schemas/Detection'
+
+    Detection:
+      type: object
+      properties:
+        id:
+          type: integer
+        imageId:
+          type: integer
+        species:
+          $ref: '#/components/schemas/Species'
+          nullable: true
+        confidence:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+        boundingBox:
+          type: object
+          properties:
+            x:
+              type: number
+            y:
+              type: number
+            width:
+              type: number
+            height:
+              type: number
+        detectedAt:
+          type: integer
+
+    Species:
+      type: object
+      properties:
+        id:
+          type: integer
+        commonName:
+          type: string
+        scientificName:
+          type: string
+          nullable: true
+        category:
+          type: string
+          nullable: true
+
+    ProcessingJob:
+      type: object
+      properties:
+        id:
+          type: integer
+        initiatedBy:
+          $ref: '#/components/schemas/User'
+        status:
+          type: string
+          enum: [pending, running, completed, failed]
+        totalImages:
+          type: integer
+        processedImages:
+          type: integer
+        successfulImages:
+          type: integer
+        failedImages:
+          type: integer
+        startedAt:
+          type: integer
+          nullable: true
+        completedAt:
+          type: integer
+          nullable: true
+        errorLog:
+          type: string
+          nullable: true
+
+    Map:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        isShared:
+          type: boolean
+        createdBy:
+          type: integer
+        createdAt:
+          type: integer
+        updatedAt:
+          type: integer
+
+    MapDetail:
+      allOf:
+        - $ref: '#/components/schemas/Map'
+        - type: object
+          properties:
+            cameraLocations:
+              type: array
+              items:
+                $ref: '#/components/schemas/CameraLocation'
+
+    CameraLocation:
+      type: object
+      properties:
+        id:
+          type: integer
+        mapId:
+          type: integer
+        label:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        createdAt:
+          type: integer
+        imageCount:
+          type: integer
+          description: Number of images associated with this location
+
+    StatisticsSummary:
+      type: object
+      properties:
+        totalImages:
+          type: integer
+        totalDetections:
+          type: integer
+        uniqueSpecies:
+          type: integer
+        dateRange:
+          type: object
+          properties:
+            start:
+              type: integer
+            end:
+              type: integer
+        topSpecies:
+          type: array
+          items:
+            type: object
+            properties:
+              species:
+                type: string
+              count:
+                type: integer
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        totalPages:
+          type: integer
+        totalItems:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Forbidden:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
