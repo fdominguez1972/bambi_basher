@@ -24,20 +24,20 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create root package.json with workspace configuration for backend and frontend
-- [ ] T002 Create backend/package.json with Node.js v20, Express, better-sqlite3, dockerode dependencies
-- [ ] T003 Create frontend/package.json with Vite, Leaflet.js dependencies
-- [ ] T004 [P] Configure ESLint in backend/.eslintrc.json with max complexity 10
-- [ ] T005 [P] Configure Prettier in backend/.prettierrc.json
-- [ ] T006 [P] Configure ESLint in frontend/.eslintrc.json
-- [ ] T007 [P] Configure Prettier in frontend/.prettierrc.json
-- [ ] T008 [P] Configure Vitest in backend/vitest.config.js for unit and integration tests
-- [ ] T009 [P] Configure Vitest in frontend/vitest.config.js
-- [ ] T010 [P] Configure Vite in frontend/vite.config.js with proxy to backend
-- [ ] T011 Create backend/.env.example with all required environment variables
-- [ ] T012 Create .gitignore for backend/storage/, backend/.env, node_modules
-- [ ] T013 Create backend/storage/ directories: images/, thumbnails/, database/
-- [ ] T014 Create README.md with quickstart instructions
+- [x] T001 Create root package.json with workspace configuration for backend and frontend
+- [x] T002 Create backend/package.json with Node.js v20, Express, better-sqlite3, dockerode dependencies
+- [x] T003 Create frontend/package.json with Vite, Leaflet.js dependencies
+- [x] T004 [P] Configure ESLint in backend/.eslintrc.json with max complexity 10
+- [x] T005 [P] Configure Prettier in backend/.prettierrc.json
+- [x] T006 [P] Configure ESLint in frontend/.eslintrc.json
+- [x] T007 [P] Configure Prettier in frontend/.prettierrc.json
+- [x] T008 [P] Configure Vitest in backend/vitest.config.js for unit and integration tests
+- [x] T009 [P] Configure Vitest in frontend/vitest.config.js
+- [x] T010 [P] Configure Vite in frontend/vite.config.js with proxy to backend
+- [x] T011 Create backend/.env.example with all required environment variables
+- [x] T012 Create .gitignore for backend/storage/, backend/.env, node_modules
+- [x] T013 Create backend/storage/ directories: images/, thumbnails/, database/
+- [x] T014 Create README.md with quickstart instructions
 
 ---
 
@@ -49,49 +49,49 @@
 
 ### Database Foundation
 
-- [ ] T015 Create backend/src/db/schema.sql with complete SQLite schema from data-model.md
-- [ ] T016 Create backend/src/db/migrations/001_initial_schema.sql with schema and seed data
-- [ ] T017 Create backend/src/db/database.js with better-sqlite3 connection, WAL mode, foreign keys enabled
-- [ ] T018 Create backend/src/db/migrations.js to run migration files and track versions
+- [x] T015 Create backend/src/db/schema.sql with complete SQLite schema from data-model.md
+- [x] T016 Create backend/src/db/migrations/001_initial_schema.sql with schema and seed data
+- [x] T017 Create backend/src/db/database.js with better-sqlite3 connection, WAL mode, foreign keys enabled
+- [x] T018 Create backend/src/db/migrations.js to run migration files and track versions
 
 ### Authentication & Authorization Foundation
 
-- [ ] T019 Create backend/src/utils/errors.js with custom error classes (AuthError, ValidationError, NotFoundError)
-- [ ] T020 Create backend/src/services/auth.js with login, logout, session validation, bcrypt password hashing
-- [ ] T021 Create backend/src/api/middleware.js with requireAuth, requireAdmin, error handling middleware
-- [ ] T022 Create backend/tests/unit/services/auth.test.js testing login, logout, session management
+- [x] T019 Create backend/src/utils/password.js with bcrypt password hashing functions
+- [x] T020 Create backend/src/services/auth.js with login, logout, session validation, bcrypt password hashing
+- [x] T021 Create backend/src/api/middleware/auth.js with requireAuth, requireAdmin middleware
+- [x] T022 Create backend/tests/unit/services/auth.test.js testing login, logout, session management
 
 ### API Foundation
 
-- [ ] T023 Create backend/src/utils/logger.js with structured JSON logging (Winston/Pino)
-- [ ] T024 Create backend/src/server.js with Express app, CORS, JSON middleware, error handlers
-- [ ] T025 Create backend/src/api/routes.js with route registration structure
-- [ ] T026 Create backend/src/api/validators.js with request validation helpers
+- [x] T023 Create backend/src/api/routes/auth.js with authentication routes
+- [x] T024 Create backend/src/utils/logger.js with structured JSON logging (Winston)
+- [x] T025 Create backend/src/api/middleware/errorHandler.js with error handling middleware
+- [x] T026 Create backend/src/server.js with Express app, CORS, JSON middleware, error handlers
 
 ### Frontend Foundation
 
-- [ ] T027 Create frontend/public/index.html with meta tags, accessibility attributes
-- [ ] T028 Create frontend/src/styles/variables.css with CSS custom properties (design system colors, spacing, fonts)
-- [ ] T029 [P] Create frontend/src/styles/reset.css with CSS reset
-- [ ] T030 [P] Create frontend/src/styles/global.css with global typography and layout
-- [ ] T031 [P] Create frontend/src/styles/accessibility.css with focus states, sr-only class
-- [ ] T032 Create frontend/src/services/api.js with fetch wrapper, error handling, baseURL configuration
-- [ ] T033 Create frontend/src/services/auth-service.js with login, logout, getCurrentUser, auth state management
-- [ ] T034 Create frontend/src/services/storage.js with localStorage wrapper for user preferences
-- [ ] T035 Create frontend/src/utils/dom.js with DOM manipulation helpers (createElement, mount, unmount)
-- [ ] T036 [P] Create frontend/src/utils/formatters.js with date, number, file size formatters
-- [ ] T037 [P] Create frontend/src/utils/validators.js with client-side validation functions
-- [ ] T038 Create frontend/src/router.js with client-side routing using History API
-- [ ] T039 Create frontend/src/services/event-bus.js with custom event bus for component communication
-- [ ] T040 Create frontend/src/components/common/header.js with navigation, user role display, logout
-- [ ] T041 Create frontend/src/components/common/header.css with responsive header styles
-- [ ] T042 [P] Create frontend/src/components/common/footer.js
-- [ ] T043 [P] Create frontend/src/components/common/footer.css
-- [ ] T044 [P] Create frontend/src/components/common/modal.js with reusable modal component
-- [ ] T045 [P] Create frontend/src/components/common/modal.css
-- [ ] T046 [P] Create frontend/src/components/common/notification.js with toast notifications
-- [ ] T047 [P] Create frontend/src/components/common/notification.css
-- [ ] T048 Create frontend/src/main.js with app initialization, router setup, auth check
+- [x] T027 Create frontend/index.html with meta tags, accessibility attributes
+- [x] T028 Create frontend/src/styles/variables.css with CSS custom properties (design system colors, spacing, fonts)
+- [x] T029 [P] Create frontend/src/styles/reset.css with CSS reset
+- [x] T030 [P] Create frontend/src/styles/global.css with global typography and layout
+- [x] T031 [P] Create frontend/src/styles/accessibility.css with focus states, sr-only class
+- [x] T032 Create frontend/src/services/api.js with fetch wrapper, error handling, baseURL configuration
+- [x] T033 Create frontend/src/services/auth-service.js with login, logout, getCurrentUser, auth state management
+- [x] T034 Create frontend/src/services/storage.js with localStorage wrapper for user preferences
+- [x] T035 Create frontend/src/utils/dom.js with DOM manipulation helpers (createElement, mount, unmount)
+- [x] T036 [P] Create frontend/src/utils/formatters.js with date, number, file size formatters
+- [x] T037 [P] Create frontend/src/utils/validators.js with client-side validation functions
+- [x] T038 Create frontend/src/router.js with client-side routing using History API
+- [x] T039 Create frontend/src/services/event-bus.js with custom event bus for component communication
+- [x] T040 Create frontend/src/components/common/header.js with navigation, user role display, logout
+- [x] T041 Create frontend/src/components/common/header.css with responsive header styles
+- [x] T042 [P] Create frontend/src/components/common/footer.js
+- [x] T043 [P] Create frontend/src/components/common/footer.css
+- [x] T044 [P] Create frontend/src/components/common/modal.js with reusable modal component
+- [x] T045 [P] Create frontend/src/components/common/modal.css
+- [x] T046 [P] Create frontend/src/components/common/notification.js with toast notifications
+- [x] T047 [P] Create frontend/src/components/common/notification.css
+- [x] T048 Create frontend/src/main.js with app initialization, router setup, auth check
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 

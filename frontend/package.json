@@ -1,0 +1,32 @@
+{
+  "name": "bambi-basher-frontend",
+  "version": "1.0.0",
+  "description": "Frontend web application for trail camera image viewing and management",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:unit": "vitest run --dir tests/unit",
+    "test:integration": "vitest run --dir tests/integration",
+    "test:a11y": "node tests/a11y.test.js",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^1.1.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.1.1",
+    "vite": "^5.0.10",
+    "vitest": "^1.1.0",
+    "axe-core": "^4.8.3",
+    "@axe-core/cli": "^4.8.1"
+  }
+}
