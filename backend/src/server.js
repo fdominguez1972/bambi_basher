@@ -11,6 +11,7 @@ import detectionsRoutes from './api/routes/detections.js';
 import speciesRoutes from './api/routes/species.js';
 import statisticsRoutes from './api/routes/statistics.js';
 import mapsRoutes from './api/routes/maps.js';
+import processingRoutes from './api/routes/processing.js';
 import { notFoundHandler, errorHandler } from './api/middleware/errorHandler.js';
 import logger, { logRequest } from './utils/logger.js';
 
@@ -66,6 +67,7 @@ app.use('/api/detections', detectionsRoutes);
 app.use('/api/species', speciesRoutes);
 app.use('/api/statistics', statisticsRoutes);
 app.use('/api/maps', mapsRoutes);
+app.use('/api/processing', processingRoutes);
 
 // 404 handler (must be after all routes)
 app.use(notFoundHandler);

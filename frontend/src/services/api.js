@@ -263,6 +263,36 @@ export async function fetchMapLocations(mapId) {
   return get(`/maps/${mapId}/locations`);
 }
 
+// Upload API
+export async function uploadImages(formData, onProgress) {
+  return upload('/images', formData, onProgress);
+}
+
+export async function deleteImage(id) {
+  return del(`/images/${id}`);
+}
+
+// Processing Jobs API
+export async function createProcessingJob(imageIds, autoStart = false) {
+  return post('/processing/jobs', { imageIds, autoStart });
+}
+
+export async function startProcessingJob(jobId) {
+  return post(`/processing/jobs/${jobId}/start`);
+}
+
+export async function fetchProcessingJobs(filters = {}) {
+  return get('/processing/jobs', filters);
+}
+
+export async function fetchProcessingJobById(id, includeImages = false) {
+  return get(`/processing/jobs/${id}`, { includeImages: includeImages ? 'true' : 'false' });
+}
+
+export async function deleteProcessingJob(id) {
+  return del(`/processing/jobs/${id}`);
+}
+
 export default {
   get,
   post,
@@ -281,5 +311,12 @@ export default {
   fetchTemporalPatterns,
   fetchMaps,
   fetchMapById,
-  fetchMapLocations
+  fetchMapLocations,
+  uploadImages,
+  deleteImage,
+  createProcessingJob,
+  startProcessingJob,
+  fetchProcessingJobs,
+  fetchProcessingJobById,
+  deleteProcessingJob
 };

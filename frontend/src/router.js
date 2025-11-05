@@ -301,6 +301,26 @@ function registerAppRoutes() {
       },
       requireAuth: true,
       title: 'Maps'
+    },
+    {
+      path: '/upload',
+      component: async (container) => {
+        const { renderUploadPage, cleanupUploadPage } = await import('./pages/upload.js');
+
+        // Cleanup previous upload page if exists
+        if (currentRoute?.route?.cleanup) {
+          currentRoute.route.cleanup();
+        }
+
+        await renderUploadPage(container);
+      },
+      cleanup: () => {
+        const { cleanupUploadPage } = require('./pages/upload.js');
+        if (cleanupUploadPage) cleanupUploadPage();
+      },
+      requireAuth: true,
+      requireAdmin: true,
+      title: 'Upload'
     }
   ];
 
