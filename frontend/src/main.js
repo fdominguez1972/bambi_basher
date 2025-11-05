@@ -6,6 +6,7 @@ import './styles/variables.css';
 import './styles/reset.css';
 import './styles/global.css';
 import './styles/accessibility.css';
+import './styles/pages.css';
 import './components/common/header.css';
 import './components/common/footer.css';
 import './components/common/modal.css';

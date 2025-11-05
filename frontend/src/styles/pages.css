@@ -1,0 +1,197 @@
+/**
+ * Page-level styles
+ */
+
+/* Login Page */
+.login-container {
+  min-height: calc(100vh - var(--header-height) - var(--footer-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.login-card {
+  max-width: 400px;
+  width: 100%;
+  padding: var(--space-8);
+}
+
+.login-title {
+  text-align: center;
+  margin-bottom: var(--space-2);
+  color: var(--color-primary);
+}
+
+.login-subtitle {
+  text-align: center;
+  color: var(--color-gray-600);
+  margin-bottom: var(--space-8);
+}
+
+.login-form {
+  margin-bottom: var(--space-6);
+}
+
+.login-demo {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+/* Gallery Page */
+.gallery-page {
+  padding: var(--space-6) 0;
+}
+
+.gallery-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-6);
+  margin-top: var(--space-6);
+}
+
+.gallery-sidebar {
+  position: sticky;
+  top: calc(var(--header-height) + var(--space-4));
+  height: fit-content;
+}
+
+.gallery-content {
+  min-width: 0;
+}
+
+/* Filters */
+.filters-container {
+  padding: var(--space-4);
+}
+
+.filters-container h3 {
+  margin: 0 0 var(--space-4) 0;
+}
+
+.filters-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.filters-group h4 {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  color: var(--color-gray-600);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.filters-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.filters-actions {
+  display: flex;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+}
+
+.filters-actions button {
+  flex: 1;
+}
+
+/* Statistics Page */
+.statistics-page {
+  padding: var(--space-6) 0;
+}
+
+.stats-summary {
+  margin-bottom: var(--space-6);
+}
+
+.species-frequency {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.species-freq-item {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+/* Maps Page */
+.maps-page {
+  padding: var(--space-6) 0;
+}
+
+/* Image Detail Modal */
+.image-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.image-detail-preview {
+  text-align: center;
+}
+
+.detail-list {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2) var(--space-4);
+}
+
+.detail-list dt {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray-600);
+}
+
+.detail-list dd {
+  margin: 0;
+}
+
+.detections-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.detection-item {
+  padding: var(--space-3);
+  background-color: var(--color-gray-100);
+  border-radius: var(--radius-md);
+}
+
+.detection-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-1);
+}
+
+.detection-confidence {
+  font-weight: var(--font-weight-semibold);
+}
+
+.detection-scientific {
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+  .gallery-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-summary.grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

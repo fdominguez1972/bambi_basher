@@ -214,6 +214,55 @@ export async function upload(endpoint, formData, onProgress = null) {
   });
 }
 
+// Images API
+export async function fetchImages(filters = {}) {
+  return get('/images', filters);
+}
+
+export async function fetchImageById(id) {
+  return get(`/images/${id}`);
+}
+
+// Detections API
+export async function fetchDetections(filters = {}) {
+  return get('/detections', filters);
+}
+
+// Species API
+export async function fetchSpecies(filters = {}) {
+  return get('/species', filters);
+}
+
+export async function fetchSpeciesById(id) {
+  return get(`/species/${id}`);
+}
+
+// Statistics API
+export async function fetchStatisticsSummary(filters = {}) {
+  return get('/statistics/summary', filters);
+}
+
+export async function fetchSpeciesFrequency(filters = {}) {
+  return get('/statistics/species-frequency', filters);
+}
+
+export async function fetchTemporalPatterns(filters = {}) {
+  return get('/statistics/temporal-patterns', filters);
+}
+
+// Maps API
+export async function fetchMaps() {
+  return get('/maps');
+}
+
+export async function fetchMapById(id) {
+  return get(`/maps/${id}`);
+}
+
+export async function fetchMapLocations(mapId) {
+  return get(`/maps/${mapId}/locations`);
+}
+
 export default {
   get,
   post,
@@ -221,5 +270,16 @@ export default {
   patch,
   del,
   upload,
-  apiFetch
+  apiFetch,
+  fetchImages,
+  fetchImageById,
+  fetchDetections,
+  fetchSpecies,
+  fetchSpeciesById,
+  fetchStatisticsSummary,
+  fetchSpeciesFrequency,
+  fetchTemporalPatterns,
+  fetchMaps,
+  fetchMapById,
+  fetchMapLocations
 };

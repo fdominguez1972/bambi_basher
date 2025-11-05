@@ -220,6 +220,9 @@ export function getCurrentRoute() {
  * Initialize router
  */
 export function initRouter() {
+  // Register routes
+  registerAppRoutes();
+
   // Handle popstate (back/forward)
   window.addEventListener('popstate', handleRoute);
 
@@ -244,6 +247,66 @@ export function initRouter() {
     getCurrentRoute,
     onRouteChange
   };
+}
+
+/**
+ * Register application routes
+ */
+function registerAppRoutes() {
+  // Import pages dynamically
+  const routes = [
+    {
+      path: '/',
+      component: () => {
+        // Redirect to gallery if authenticated, otherwise login
+        if (isAuthenticated()) {
+          navigateTo('/gallery', true);
+        } else {
+          navigateTo('/login', true);
+        }
+      },
+      title: 'Home'
+    },
+    {
+      path: '/login',
+      component: async (container) => {
+        const { renderLoginPage } = await import('./pages/login.js');
+        await renderLoginPage(container);
+      },
+      title: 'Login'
+    },
+    {
+      path: '/gallery',
+      component: async (container) => {
+        const { renderGalleryPage } = await import('./pages/gallery.js');
+        await renderGalleryPage(container);
+      },
+      requireAuth: true,
+      title: 'Gallery'
+    },
+    {
+      path: '/statistics',
+      component: async (container) => {
+        const { renderStatisticsPage } = await import('./pages/statistics.js');
+        await renderStatisticsPage(container);
+      },
+      requireAuth: true,
+      title: 'Statistics'
+    },
+    {
+      path: '/maps',
+      component: async (container) => {
+        const { renderMapsPage } = await import('./pages/maps.js');
+        await renderMapsPage(container);
+      },
+      requireAuth: true,
+      title: 'Maps'
+    }
+  ];
+
+  routes.forEach(route => {
+    registerRoute(route.path, route.component, route);
+  });
 }
 
 export default {
