@@ -6,6 +6,11 @@ import cookieParser from 'cookie-parser';
 import { startSessionCleanup } from './services/auth.js';
 import { migrate, isUpToDate } from './db/migrations.js';
 import authRoutes from './api/routes/auth.js';
+import imagesRoutes from './api/routes/images.js';
+import detectionsRoutes from './api/routes/detections.js';
+import speciesRoutes from './api/routes/species.js';
+import statisticsRoutes from './api/routes/statistics.js';
+import mapsRoutes from './api/routes/maps.js';
 import { notFoundHandler, errorHandler } from './api/middleware/errorHandler.js';
 import logger, { logRequest } from './utils/logger.js';
 
@@ -56,6 +61,11 @@ app.get('/health', (req, res) => {
 
 // API routes
 app.use('/api/auth', authRoutes);
+app.use('/api/images', imagesRoutes);
+app.use('/api/detections', detectionsRoutes);
+app.use('/api/species', speciesRoutes);
+app.use('/api/statistics', statisticsRoutes);
+app.use('/api/maps', mapsRoutes);
 
 // 404 handler (must be after all routes)
 app.use(notFoundHandler);
