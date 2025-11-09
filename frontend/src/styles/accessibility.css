@@ -1,0 +1,196 @@
+/**
+ * Accessibility Styles
+ * Focus states, screen reader utilities, and WCAG 2.1 Level AA compliance
+ */
+
+/* Skip to main content link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  padding: var(--space-2) var(--space-4);
+  text-decoration: none;
+  z-index: var(--z-index-tooltip);
+  border-radius: var(--radius-md);
+}
+
+.skip-link:focus {
+  top: var(--space-2);
+  left: var(--space-2);
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Make screen reader only content visible on focus */
+.sr-only-focusable:active,
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Focus styles for interactive elements */
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Remove default focus outline (will be replaced by focus-visible) */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Enhanced focus for buttons */
+button:focus-visible,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-outline:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Enhanced focus for form elements */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-alpha);
+}
+
+/* Enhanced focus for links */
+a:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-primary);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
+}
+
+/* Keyboard navigation indication */
+.keyboard-navigation *:focus {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-primary: #1e4620;
+    --color-gray-500: #404040;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .loading::after {
+    animation: none;
+  }
+}
+
+/* ARIA live regions */
+[aria-live='polite'],
+[aria-live='assertive'] {
+  position: relative;
+}
+
+/* Disabled state indication */
+[disabled],
+[aria-disabled='true'] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Required field indication */
+[required],
+[aria-required='true'] {
+  /* Visual indicator handled by form layout */
+}
+
+.required-indicator::after {
+  content: '*';
+  color: var(--color-error);
+  margin-left: var(--space-1);
+}
+
+/* Invalid field indication */
+input:invalid,
+textarea:invalid,
+select:invalid {
+  border-color: var(--color-error);
+}
+
+input[aria-invalid='true'],
+textarea[aria-invalid='true'],
+select[aria-invalid='true'] {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Focus within - maintain focus styles for containers with focused children */
+.form-group:focus-within label {
+  color: var(--color-primary);
+}
+
+/* Ensure sufficient color contrast for text */
+.low-contrast-warning {
+  /* This class can be used to highlight areas that may not meet WCAG AA standards */
+  background-color: var(--color-warning-light);
+  padding: var(--space-2);
+  border-left: 4px solid var(--color-warning);
+}
+
+/* Touch target size for mobile (minimum 44x44px per WCAG) */
+@media (pointer: coarse) {
+  button,
+  a,
+  input[type='checkbox'],
+  input[type='radio'] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Visually hidden but accessible to screen readers */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}

@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Storage
+backend/storage/
+
+# Test fixtures
+**/fixtures/
+**/mocks/
+
+# Generated files
+*.min.js
+*.bundle.js
+
+# Config files
+*.config.js
+vite.config.js
+vitest.config.js

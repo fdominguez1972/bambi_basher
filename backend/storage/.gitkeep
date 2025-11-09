@@ -1,0 +1,2 @@
+# This file ensures the storage directory structure is tracked in git
+# The actual content (images, thumbnails, database files) is gitignored
