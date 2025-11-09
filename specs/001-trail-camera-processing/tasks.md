@@ -107,27 +107,27 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T049 [P] [US1] Contract test for GET /api/images in backend/tests/contract/images.test.js
-- [ ] T050 [P] [US1] Contract test for GET /api/images/:id in backend/tests/contract/images.test.js
-- [ ] T051 [P] [US1] Contract test for GET /api/detections in backend/tests/contract/detections.test.js
-- [ ] T052 [P] [US1] Contract test for GET /api/species in backend/tests/contract/species.test.js
-- [ ] T053 [P] [US1] Contract test for GET /api/statistics/summary in backend/tests/contract/statistics.test.js
-- [ ] T054 [P] [US1] Contract test for GET /api/maps in backend/tests/contract/maps.test.js
-- [ ] T055 [US1] Integration test for user viewing images workflow in backend/tests/integration/user-viewing.test.js
+- [X] T049 [P] [US1] Contract test for GET /api/images in backend/tests/contract/images.test.js
+- [X] T050 [P] [US1] Contract test for GET /api/images/:id in backend/tests/contract/images.test.js
+- [X] T051 [P] [US1] Contract test for GET /api/detections in backend/tests/contract/detections.test.js
+- [X] T052 [P] [US1] Contract test for GET /api/species in backend/tests/contract/species.test.js
+- [X] T053 [P] [US1] Contract test for GET /api/statistics/summary in backend/tests/contract/statistics.test.js
+- [X] T054 [P] [US1] Contract test for GET /api/maps in backend/tests/contract/maps.test.js
+- [X] T055 [US1] Integration test for user viewing images workflow in backend/tests/integration/user-viewing.test.js
 
 ### Backend Implementation for User Story 1
 
-- [ ] T056 [P] [US1] Implement backend/src/services/images.js with getImages (pagination, filters), getImageById, getImageFile
-- [ ] T057 [P] [US1] Implement backend/src/services/statistics.js with getSummary, getSpeciesFrequency, getTemporalPatterns, computeInsights
-- [ ] T058 [P] [US1] Implement backend/src/services/maps.js with getMaps (filter by is_shared), getMapById with locations
-- [ ] T059 [US1] Add GET /api/images routes in backend/src/api/routes.js with pagination, filtering
-- [ ] T060 [US1] Add GET /api/images/:id route in backend/src/api/routes.js
-- [ ] T061 [US1] Add GET /api/images/:id/file route with thumbnail parameter in backend/src/api/routes.js
-- [ ] T062 [US1] Add GET /api/detections route in backend/src/api/routes.js
-- [ ] T063 [US1] Add GET /api/species route in backend/src/api/routes.js
-- [ ] T064 [US1] Add GET /api/statistics/* routes (summary, species-frequency, temporal-patterns) in backend/src/api/routes.js
-- [ ] T065 [US1] Add GET /api/maps routes in backend/src/api/routes.js
-- [ ] T066 [US1] Add GET /api/maps/:id route in backend/src/api/routes.js
+- [X] T056 [P] [US1] Implement backend/src/services/images.js with getImages (pagination, filters), getImageById, getImageFile
+- [X] T057 [P] [US1] Implement backend/src/services/statistics.js with getSummary, getSpeciesFrequency, getTemporalPatterns, computeInsights
+- [X] T058 [P] [US1] Implement backend/src/services/maps.js with getMaps (filter by is_shared), getMapById with locations
+- [X] T059 [US1] Add GET /api/images routes in backend/src/api/routes.js with pagination, filtering
+- [X] T060 [US1] Add GET /api/images/:id route in backend/src/api/routes.js
+- [X] T061 [US1] Add GET /api/images/:id/file route with thumbnail parameter in backend/src/api/routes.js
+- [X] T062 [US1] Add GET /api/detections route in backend/src/api/routes.js
+- [X] T063 [US1] Add GET /api/species route in backend/src/api/routes.js
+- [X] T064 [US1] Add GET /api/statistics/* routes (summary, species-frequency, temporal-patterns) in backend/src/api/routes.js
+- [X] T065 [US1] Add GET /api/maps routes in backend/src/api/routes.js
+- [X] T066 [US1] Add GET /api/maps/:id route in backend/src/api/routes.js
 
 ### Frontend Implementation for User Story 1
 
